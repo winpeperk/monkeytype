@@ -1,7 +1,19 @@
-.mistake-letter {
+.incorrect-letter {
     color: red
 }
 
-.warning-letter {
+.extra-letter {
     color: yellow
+}
+
+.correct-letter {
+    color: green
+}
+
+.incorrect-word {
+    text-decoration: underline;
+}
+
+span {
+    font-size: 30px;
 }
