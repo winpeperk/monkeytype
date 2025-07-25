@@ -1,5 +1,6 @@
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useImmer } from "use-immer"
+import TyperContext from "./TyperContext"
 import cn from "classnames"
 
 const Letter =  ({letter, userLetter}) => {
@@ -55,7 +56,7 @@ const Typer = ({initialText}) => {
     const initialWords = initialText.split(" ").map(word => ({
         letters: word.split(""),
         userLetters: [],
-        status: "pending"
+        status: "inProgress"
     }))
 
     const [typingState, setTypingState] = useImmer({
@@ -63,56 +64,66 @@ const Typer = ({initialText}) => {
         activeWord: 0
     })
 
+    const {addIncorrectChars, addCorrectChars, addRawChars} = useContext(TyperContext)
+
     useEffect(() => {
-        const handleKeyUp = (e) => {
-            switch (e.key) {
-                case "Tab": {
-                    //запрос к новому тексту
-                    break
-                }
-                case "Backspace" : {
-                    setTypingState(prevState => {
-                        const {words, activeWord} = prevState
-                        const typedLetters = words[activeWord].userLetters
+        const checkLetter = ({letters, userLetters}) => {
+            const index = userLetters.length - 1
+            if (letters[index] == userLetters[index]) {
+                addCorrectChars()
+            } else {
+                addIncorrectChars()
+            }
+        }
+        const checkWord = ({letters, userLetters}) => {
+            if(userLetters.length < letters.length) {
+                addIncorrectChars()
+            }
+        }
+        const handleKeyDown = (e) => {
+            setTypingState(prev => {
+                const {words, activeWord} = prev
+                const typedLetters = words[activeWord].userLetters
+                switch (e.key) {
+                    case "Tab": {
+                        //запрос к новому тексту
+                        break;
+                    }
+                    case "Backspace" : {                            
                         if(typedLetters.length == 0) {
                             if(activeWord == 0) return 
-                            words[activeWord].status = "pending"
-                            words[activeWord - 1].status = "typing"
-                            prevState.activeWord--
+                            words[activeWord - 1].status = "inProgress"
+                            prev.activeWord--
                         } else {
                             typedLetters.pop()
                         }
-                    })
-                    break
-                }
-                case " ": {
-                    setTypingState(prevState => {
-                        const {words, activeWord} = prevState
-                        const typedLetters = words[activeWord].userLetters
-                        if(typedLetters.length == 0) return 
-                        if(activeWord < words.length - 1) {
+                        break;
+                    }
+                    case " ": {
+                        if(typedLetters.length == 0) {
+                            addIncorrectChars()
+                        } else if(activeWord < words.length - 1) {
+                            checkWord(words[activeWord])
                             words[activeWord].status = "done"
-                            words[activeWord + 1].status = "typing"
-                            prevState.activeWord++
+                            prev.activeWord++
                         }
-                    })
-                    break
-                }
-                default: {
-                    if(e.key.length != 1) return
-                    setTypingState(prevState => {
-                        const {words, activeWord} = prevState
-                        if(words[activeWord].status == "pending") {
-                            words[activeWord].status = "typing"
-                        }
+                        break
+                    }
+                    default: {
+                        if(e.key.length != 1) break
                         words[activeWord].userLetters.push(e.key)
-                    })
+                        checkLetter(words[activeWord])
+                        break
+                    }
                 }
+            })
+            if(e.key == "Backspace" || e.key.length == 1) {
+                addRawChars()
             }
         }
-        document.addEventListener("keyup", handleKeyUp)
-        return () => document.removeEventListener("keyup", handleKeyUp)
-    }, [setTypingState])
+        document.addEventListener("keydown", handleKeyDown)
+        return () => document.removeEventListener("keydown", handleKeyDown)
+    }, [addCorrectChars, addIncorrectChars, addRawChars, setTypingState])
 
     return (
         <>

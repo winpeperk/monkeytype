@@ -1,13 +1,20 @@
-import { useState } from "react"
-import Typer from "./Typer.jsx"
+//import { useState } from "react"
+import { useImmer } from "use-immer"
+import TyperContainer from "./TyperContainer"
 
 const App = () => {
-  const [mistakes, setMistakes] = useState(0)
-  const addMistake = () => setMistakes(prevMistakes => prevMistakes++)
-  
+  const [errors, setError] = useImmer([])
+  const [wpm, setWpm] = useImmer([])
+  const [raw, setRaw] = useImmer([])
+  //const [time, setTime] = useState(15)
+  const time = 15
+
   return (
     <>
-      <Typer mistakes={mistakes} addMistake={addMistake} initialText={"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci."}/>
+      <TyperContainer time={time} setError={setError} setWpm={setWpm} setRaw={setRaw}/>
+      <div>{errors.join(" ")}</div>
+      <div>{wpm.join(" ")}</div>
+      <div>{raw.join(" ")}</div>
     </>
   )
 }
