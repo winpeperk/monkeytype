@@ -1,4 +1,4 @@
-.incorrect-letter {
+/* .incorrect-letter {
     color: red
 }
 
@@ -8,7 +8,7 @@
 
 .correct-letter {
     color: green
-}
+} */
 
 .incorrect-word {
     text-decoration: underline;
@@ -16,4 +16,36 @@
 
 span {
     font-size: 30px;
+}
+
+.recharts-wrapper>svg {
+    outline: none;
+}
+
+[data-theme="light"] {
+    --background-primary: 255, 251, 254;
+    --background-secondary: 239, 224, 241;
+    --text-primary: 231, 171, 208;
+    --text-secondary: 185, 65, 137;
+    --text-extra: 151, 121, 227;
+    --accent: 92, 41, 84;
+    --tooltip-background: 32, 33, 36;
+    --shadow-raw: 229, 225, 228;
+    --shadow-wpm: 206, 203, 205;
+}
+
+[data-theme="light"] .correct-letter {
+    color: rgb(var(--text-secondary));
+}
+
+[data-theme="light"] .incorrect-letter {
+    color: rgb(var(--accent));
+}
+
+[data-theme="light"] .extra-letter {
+    color: rgb(var(--text-extra));
+}
+
+[data-theme="light"] .incorrect-word {
+    text-decoration-color: rgb(var(--accent));
 }
