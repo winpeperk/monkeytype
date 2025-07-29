@@ -8,7 +8,7 @@ const colors = {
     errors: "rgb(var(--errors))"
 }
 
-const TyperChart = ({time, errors, wpm, raw}) => {
+const Chart = ({time, errors, wpm, raw}) => {
     const dataLine = Array.from({length: time}, (_,index) => ({
         time: index + 1,
         wpm: wpm[index],
@@ -55,4 +55,4 @@ const TyperChart = ({time, errors, wpm, raw}) => {
     )
 }
 
-export default TyperChart
+export default Chart

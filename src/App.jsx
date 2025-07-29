@@ -1,7 +1,6 @@
 import { useImmer } from "use-immer"
-import TyperContainer from "./TyperContainer"
-import TyperChart from "./TyperChart"
-
+import TyperContainer from "./components/TyperContainer"
+import Chart from "./components/Chart"
 
 const App = () => {
   const [errors, setError] = useImmer([])
@@ -10,13 +9,13 @@ const App = () => {
   const time = 15
 
   return (
-    <div style={{color: "rgb(var(--text-primary))", background: "rgb(var(--background-primary))"}}>
+    <>
       <TyperContainer time={time} setError={setError} setWpm={setWpm} setRaw={setRaw}/>
       <div>{errors.join(" ")}</div>
       <div>{wpm.join(" ")}</div>
       <div>{raw.join(" ")}</div>
-      <TyperChart time={time} errors={errors} wpm={wpm} raw={raw}/>
-    </div>
+      <Chart time={time} errors={errors} wpm={wpm} raw={raw}/>
+    </>
   )
 }
 

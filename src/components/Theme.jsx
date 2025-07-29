@@ -15,17 +15,18 @@ const storageKey = "theme"
 
 const themes = ["light", "dark"]
 
-const getInitTheme = () => {
-    let initTheme = localStorage.getItem(storageKey)
-    if(!initTheme) {
-        localStorage.setItem(storageKey, "light")
-        initTheme = "light"
-    }
-    return initTheme
-}
-
 const Theme = ({children}) => {
-    const [theme, setTheme] = useState(getInitTheme)
+    const [theme, setTheme] = useState(null)
+
+    useEffect(() => {
+        let initTheme = localStorage.getItem(storageKey)
+        if(initTheme == null) {
+            initTheme = "light"
+            localStorage.setItem(storageKey, initTheme)
+        }
+        setTheme(initTheme)
+        document.documentElement.setAttribute("data-theme", initTheme)
+    }, [])
 
     useEffect(() => { 
         const handleStorage = (event) => {
@@ -36,9 +37,9 @@ const Theme = ({children}) => {
                 document.documentElement.setAttribute("data-theme", newTheme)
             }
         }
-        document.addEventListener("storage", handleStorage)
+        window.addEventListener("storage", handleStorage)
         return () => {
-            document.removeEventListener("storage", handleStorage)
+            window.removeEventListener("storage", handleStorage)
         }
     }, [])
 
