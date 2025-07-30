@@ -9,10 +9,6 @@ span {
     font-size: 30px;
 }
 
-.recharts-wrapper>svg {
-    outline: none;
-}
-
 [data-theme="light"] {
     --background-primary: 255, 251, 254;
     --text-primary: 231, 171, 208;
@@ -31,15 +27,15 @@ span {
     --tooltip-background: 198, 198, 198;
 }
 
-.correct-letter {
+.correct {
     color: rgb(var(--text-secondary));
 }
 
-.incorrect-letter {
+.incorrect {
     color: rgb(var(--errors));
 }
 
-.extra-letter {
+.extra {
     color: rgb(var(--extra));
 }
 

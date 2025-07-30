@@ -1,43 +1,58 @@
-import { useEffect, useRef } from "react"
-import TyperContext from "./TyperContext"
-import Typer from "./Typer"
+import { useEffect, useRef } from "react";
+import Typer from "./Typer";
 
-const TyperContainer = ({time, setError, setWpm, setRaw}) => {
-    const incorrectChars = useRef(0)
-    const correctChars = useRef(0)
-    const rawChars = useRef(0)
+const TyperContainer = ({ time, setError, setWpm, setRaw, setStat, setAfk }) => {
+  const error = useRef(0);
+  const rawChars = useRef(0);
 
-    const addIncorrectChars = () => incorrectChars.current += 1
-    const addCorrectChars = () => correctChars.current += 1
-    const addRawChars = () => rawChars.current += 1
-    const addFunctions = {addIncorrectChars, addCorrectChars, addRawChars}
+  const addError = () => {error.current += 1}
+  const addRaw = () => {rawChars.current += 1};
 
-    useEffect(() => {
-        let elapsedSeconds = 0
-        const intervalId = setInterval(() => {
-            elapsedSeconds++
-            setError(errors => {
-                errors.push(incorrectChars.current)
-                incorrectChars.current = 0
-            })
-            setWpm(wpm => {wpm.push(Math.round((correctChars.current / 5) / (elapsedSeconds / 60)))})
-            setRaw(raw => {
-                raw.push(Math.round((rawChars.current / 5) * 60))
-                rawChars.current = 0
-            })
-        }, 1000)
-        const timeoutId = setTimeout(() => clearInterval(intervalId), time * 1000)
-        return () => {
-            clearInterval(intervalId)
-            clearTimeout(timeoutId)
+  useEffect(() => {
+    let elapsedSeconds = 0;
+    const intervalId = setInterval(() => {
+      elapsedSeconds++;
+      let correct = document.querySelectorAll(".correct").length
+      setError((errors) => {
+        errors.push(error.current);
+        error.current = 0;
+      });
+      setWpm((wpm) => {
+        wpm.push(Math.round(correct / 5 / (elapsedSeconds / 60)));
+      });
+      if(rawChars.current == 0) {
+        setAfk((afk) => afk + 1)
+      }
+      setRaw((raw) => {
+        raw.push(Math.round((rawChars.current / 5) * 60));
+        rawChars.current = 0;
+      });
+    }, 1000);
+    const timeoutId = setTimeout(() => {
+      clearInterval(intervalId)
+      setStat(prev => {
+        prev.correct = document.querySelectorAll(".correct").length
+        prev.incorrect = document.querySelectorAll(".incorrect").length
+        prev.extra = document.querySelectorAll(".extra").length
+        prev.missed = document.querySelectorAll(".missed").length
+      })
+    }, time * 1000);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [time, setError, setWpm, setRaw, setStat, setAfk]);
+
+  return (
+      <Typer
+        initialText={
+          "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci."
         }
-    }, [time, setError, setWpm, setRaw])
-    
-    return (
-        <TyperContext.Provider value={addFunctions}>
-            <Typer initialText={"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci."}/>
-        </TyperContext.Provider>
-    )
-}
+        addError={addError}
+        addRaw={addRaw}
+      />
 
-export default TyperContainer
+    );
+};
+
+export default TyperContainer;
