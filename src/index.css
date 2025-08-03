@@ -5,6 +5,20 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("../public/fonts/IBMPlexMono-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("../public/fonts/IBMPlexMono-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
 span {
     font-size: 30px;
 }

@@ -12,10 +12,12 @@ import {
 } from "recharts";
 import { FaCat } from "react-icons/fa";
 import styled from "styled-components";
+import { useContext } from "react";
+import ResizeContext from "./ResizeContext";
 
 const ChartContainer = styled.div`
   width: 100%;
-  height: 250px;
+  height: 100%;
   svg:focus {
     outline: none;
   }
@@ -35,10 +37,12 @@ const Chart = ({ time, errors, wpm, raw }) => {
     errors: errors[index],
   }));
 
+  const { width } = useContext(ResizeContext)
+
   const handleDots =
     (name) =>
     ({ cx, cy, payload }) => {
-      if (name == "errors" && payload.errors == 0) return null;
+      if (name === "errors" && payload.errors === 0) return null;
       return <circle cx={cx} cy={cy} fill={colors[name]} r={4} />;
     };
 
@@ -52,7 +56,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
       >
         <Text>{label}</Text>
         {payload.map(({ name, value }, index) =>
-          name != "time" ? (
+          name !== "time" ? (
             <Flex
               key={index}
               direction="row"
@@ -79,6 +83,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
             dataKey="time"
             stroke="rgb(var(--tooltip-background))"
             tick={{ fill: "rgb(var(--text-primary))" }}
+            interval={width < 768 ? 1 : 0}
           />
           <YAxis
             yAxisId="left"

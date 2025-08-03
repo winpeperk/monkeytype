@@ -4,10 +4,10 @@ import cn from "classnames";
 
 const Letter = ({ letter, userLetter, status }) => {
   const letterClass = cn({
-    "correct": letter && userLetter && letter == userLetter,
-    "incorrect": letter && userLetter && letter != userLetter,
+    "correct": letter && userLetter && letter === userLetter,
+    "incorrect": letter && userLetter && letter !== userLetter,
     "extra": !letter && userLetter,
-    "missed": !userLetter && letter && status == "done"
+    "missed": !userLetter && letter && status === "done"
   });
 
   const letterValue = letterClass.includes("extra") ? userLetter : letter;
@@ -15,14 +15,12 @@ const Letter = ({ letter, userLetter, status }) => {
   return <span className={letterClass}>{letterValue}</span>;
 };
 
-const Word = ({ letters, userLetters, status, index }) => {
+const Word = ({ letters, userLetters, status, active, index }) => {
   const hasMistake = () => {
-    let mistake =
-      userLetters.length > letters.length ||
-      (userLetters.length < letters.length && status == "done");
+    let mistake = userLetters.length !== letters.length;
     if (mistake) return mistake;
-    for (let i = 0; i < letters.length && i < userLetters.length; i++) {
-      if (letters[i] != userLetters[i]) {
+    for (let i = 0; i < letters.length; i++) {
+      if (letters[i] !== userLetters[i]) {
         mistake = true;
         break;
       }
@@ -30,8 +28,12 @@ const Word = ({ letters, userLetters, status, index }) => {
     return mistake;
   };
 
+  const withMistake = hasMistake()
+
   const wordClass = cn({
-    "incorrect-word": status == "done" && hasMistake(),
+    "incorrect-word": status === "done" && withMistake,
+    "correct-word": status === "done" && !withMistake,
+    "active-word": active === index
   });
 
   const wordLetters = () => {
@@ -42,7 +44,7 @@ const Word = ({ letters, userLetters, status, index }) => {
     }));
   };
 
-  const withSpace = index == 0 ? false : true;
+  const withSpace = index === 0 ? false : true;
 
   return (
     <>
@@ -77,7 +79,7 @@ const Typer = ({ initialText, addError, addRaw }) => {
         return
       }
       // Если буквы не совпадают, это ошибка
-      if (letters[index] != userLetters[index]) {
+      if (letters[index] !== userLetters[index]) {
         addError()
       }
     }
@@ -97,36 +99,36 @@ const Typer = ({ initialText, addError, addRaw }) => {
             break;
           }
           case "Backspace": {
-            if (typedLetters.length == 0) {
-              if (activeWord == 0) return;
+            if (typedLetters.length === 0) {
+              if (activeWord === 0) return;
               words[activeWord - 1].status = "inProgress";
               prev.activeWord--;
             } else {
               typedLetters.pop();
             }
+            addRaw();
             break;
           }
           case " ": {
-            if (typedLetters.length == 0) {
+            if (typedLetters.length === 0) {
               addError()
             } else if (activeWord < words.length - 1) {
               checkExtraSpace(active)
               active.status = "done";
               prev.activeWord++;
             }
+            addRaw()
             break;
           }
           default: {
-            if (e.key.length != 1) break;
+            if (e.key.length !== 1) break;
             active.userLetters.push(e.key);
             checkIncorrectLetter(active)
+            addRaw()
             break;
           }
         }
       });
-      if(e.key != "Shift") {
-        addRaw();
-      }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -134,13 +136,14 @@ const Typer = ({ initialText, addError, addRaw }) => {
 
   return (
     <>
-      <div>
+      <div style={{lineHeight: "250%"}}>
         {typingState.words.map(({ letters, userLetters, status }, index) => (
           <Word
             key={index}
             letters={letters}
             userLetters={userLetters}
             status={status}
+            active={typingState.activeWord}
             index={index}
           />
         ))}

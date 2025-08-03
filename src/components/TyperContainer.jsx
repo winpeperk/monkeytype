@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Typer from "./Typer";
 
-const TyperContainer = ({ time, setError, setWpm, setRaw, setStat, setAfk }) => {
+const TyperContainer = ({ time, setStat }) => {
   const error = useRef(0);
   const rawChars = useRef(0);
 
@@ -10,27 +10,44 @@ const TyperContainer = ({ time, setError, setWpm, setRaw, setStat, setAfk }) => 
 
   useEffect(() => {
     let elapsedSeconds = 0;
+    const calculateCorrectChars = () => {
+      const correctWords = document.querySelectorAll(".correct-word");
+      let result = Math.max(0, correctWords.length - 1);
+      correctWords.forEach(word => {
+        result += word.querySelectorAll(".correct").length;
+      });
+      
+      const activeWord = document.querySelector(".active-word");
+      result += activeWord.querySelectorAll(".correct").length;
+      
+      if (correctWords.length > 0) {
+        result += 1;
+      }
+      return result
+    }
     const intervalId = setInterval(() => {
       elapsedSeconds++;
-      let correct = document.querySelectorAll(".correct").length
-      setError((errors) => {
+      
+      const correctChars = calculateCorrectChars()
+      
+      setStat(prev => {
+        const {errors, wpm, raw} = prev
         errors.push(error.current);
         error.current = 0;
-      });
-      setWpm((wpm) => {
-        wpm.push(Math.round(correct / 5 / (elapsedSeconds / 60)));
-      });
-      if(rawChars.current == 0) {
-        setAfk((afk) => afk + 1)
-      }
-      setRaw((raw) => {
-        raw.push(Math.round((rawChars.current / 5) * 60));
-        rawChars.current = 0;
-      });
+        
+        wpm.push(Math.round((correctChars / 5) / (elapsedSeconds / 60)));
+        
+        if(rawChars.current == 0) {
+          prev.afk += 1
+        }
+        raw.push(Math.round(((rawChars.current / 5) / (elapsedSeconds / 60))));
+      })
     }, 1000);
     const timeoutId = setTimeout(() => {
       clearInterval(intervalId)
       setStat(prev => {
+        prev.correctChars += calculateCorrectChars()
+        prev.rawChars += rawChars.current
         prev.correct = document.querySelectorAll(".correct").length
         prev.incorrect = document.querySelectorAll(".incorrect").length
         prev.extra = document.querySelectorAll(".extra").length
@@ -41,7 +58,7 @@ const TyperContainer = ({ time, setError, setWpm, setRaw, setStat, setAfk }) => 
       clearInterval(intervalId);
       clearTimeout(timeoutId);
     };
-  }, [time, setError, setWpm, setRaw, setStat, setAfk]);
+  }, [time, setStat]);
 
   return (
       <Typer

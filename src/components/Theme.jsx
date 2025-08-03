@@ -20,7 +20,7 @@ const Theme = ({ children }) => {
 
   useEffect(() => {
     let initTheme = localStorage.getItem(storageKey);
-    if (initTheme == null) {
+    if (initTheme === null) {
       initTheme = "light";
       localStorage.setItem(storageKey, initTheme);
     }
@@ -30,7 +30,7 @@ const Theme = ({ children }) => {
 
   useEffect(() => {
     const handleStorage = (event) => {
-      if (event.key != storageKey) return;
+      if (event.key !== storageKey) return;
       const newTheme = localStorage.getItem(storageKey);
       if (newTheme) {
         setTheme(newTheme);

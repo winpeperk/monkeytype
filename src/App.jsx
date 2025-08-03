@@ -1,46 +1,51 @@
-import { useState } from "react";
 import { useImmer } from "use-immer";
 import TyperContainer from "./components/TyperContainer";
-import Chart from "./components/Chart";
+import StatGrid from "./components/StatGrid";
+import { useEffect, useState } from "react";
+import ResizeContext from "./components/ResizeContext"
 
 const App = () => {
   const [stat, setStat] = useImmer({
     incorrect: 0,
     correct: 0,
     extra: 0,
-    missed: 0
+    missed: 0,
+    errors: [],
+    correctChars: 0,
+    rawChars: 0,
+    wpm: [],
+    raw: [],
+    afk: 0
   });
-  const [errors, setError] = useImmer([]);
-  const [wpm, setWpm] = useImmer([]);
-  const [raw, setRaw] = useImmer([]);
-  const [afk, setAfk] = useState(0)
   const time = 15;
 
-/*   const average = (array) => {
-    if(array.length == 0) return 0
-    return array.reduce((sum, currentWpm) => sum + currentWpm, 0) / array.length
-  } */
+  const [width, setWidth] = useState(window.innerWidth)
+
+  useEffect(() => {
+    const handleWidth = () => {
+      setWidth(window.innerWidth)
+    }
+    window.addEventListener("resize", handleWidth)
+    return () => {
+      window.removeEventListener("resize", handleWidth)
+    }
+  }, [])
 
   return (
-    <>
+    <ResizeContext.Provider value={{ width }}>
       <TyperContainer
         time={time}
-        setError={setError}
-        setWpm={setWpm}
-        setRaw={setRaw}
         setStat={setStat}
-        setAfk={setAfk}
       />
-      <div>{errors.join(" ")}</div>
-      <div>{wpm.join(" ")}</div>
-      <div>{raw.join(" ")}</div>
+      {/* <div>{stat.errors.join(" ")}</div>
+      
       <div> incorrect {stat.incorrect}</div>
       <div>correct {stat.correct}</div>
       <div>extra {stat.extra}</div>
       <div>missed {stat.missed}</div>
-      <div>afk {afk}</div>
-      <Chart time={time} errors={errors} wpm={wpm} raw={raw} />
-    </>
+      <div>afk {stat.afk}</div> */}
+      <StatGrid stat={stat} time={time} width={width}/>
+    </ResizeContext.Provider>
   );
 };
 

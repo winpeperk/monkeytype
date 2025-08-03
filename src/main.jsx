@@ -5,10 +5,10 @@ import Theme from "./components/Theme";
 import { createGlobalStyle } from "styled-components";
 import "./index.css";
 
-const ContainerSize = {
+const containerSize = {
   base: "100%",
-  sm: "85%",
-  lg: "80%",
+  sm: "90%",
+  md: "85%"
 };
 
 const Global = createGlobalStyle`
@@ -16,6 +16,7 @@ const Global = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    line-height: 100%;
   }
   body {
     background: rgb(var(--background-primary));
@@ -25,13 +26,13 @@ const Global = createGlobalStyle`
 `;
 
 createRoot(document.getElementById("root")).render(
-  <ChakraProvider>
+  <ChakraProvider disableGlobalStyle resetCSS>
     <Theme>
-      <Container maxWidth={ContainerSize}>
+      <Container maxWidth={containerSize}>
         <Global />
         <App />
       </Container>
       <Theme.Button />
     </Theme>
-  </ChakraProvider>,
+  </ChakraProvider>
 );
