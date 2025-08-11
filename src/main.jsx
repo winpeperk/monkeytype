@@ -28,7 +28,7 @@ const Global = createGlobalStyle`
 createRoot(document.getElementById("root")).render(
   <ChakraProvider disableGlobalStyle resetCSS>
     <Theme>
-      <Container maxWidth={containerSize}>
+      <Container maxWidth={containerSize} mt={10} mb={10}>
         <Global />
         <App />
       </Container>

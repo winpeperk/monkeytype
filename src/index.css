@@ -19,6 +19,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: "Lexend Deca";
+    src: url("../public/fonts/LexendDeca-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
 span {
     font-size: 30px;
 }
@@ -30,6 +37,7 @@ span {
     --extra: 151, 121, 227;
     --errors: 92, 41, 84;
     --tooltip-background: 32, 33, 36;
+    --logo: 185, 65, 137;
 }
 
 [data-theme="dark"] {
@@ -39,6 +47,7 @@ span {
     --extra: 192, 14, 19;
     --errors: 192, 14, 19;
     --tooltip-background: 198, 198, 198;
+    --logo: 198, 198, 198;
 }
 
 .correct {

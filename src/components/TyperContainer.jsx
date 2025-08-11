@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Typer from "./Typer";
 
-const TyperContainer = ({ time, setStat }) => {
+const TyperContainer = ({ time, setStat, setIsTyped }) => {
   const error = useRef(0);
   const rawChars = useRef(0);
 
@@ -53,12 +53,13 @@ const TyperContainer = ({ time, setStat }) => {
         prev.extra = document.querySelectorAll(".extra").length
         prev.missed = document.querySelectorAll(".missed").length
       })
+      setIsTyped("typed")
     }, time * 1000);
     return () => {
       clearInterval(intervalId);
       clearTimeout(timeoutId);
     };
-  }, [time, setStat]);
+  }, [time, setStat, setIsTyped]);
 
   return (
       <Typer

@@ -2,7 +2,8 @@ import { useImmer } from "use-immer";
 import TyperContainer from "./components/TyperContainer";
 import StatGrid from "./components/StatGrid";
 import { useEffect, useState } from "react";
-import ResizeContext from "./components/ResizeContext"
+import ResizeContext from "./components/ResizeContext";
+import Header from "./components/Header";
 
 const App = () => {
   const [stat, setStat] = useImmer({
@@ -17,8 +18,8 @@ const App = () => {
     raw: [],
     afk: 0
   });
+  const [isTyped, setIsTyped] = useState("typing");
   const time = 15;
-
   const [width, setWidth] = useState(window.innerWidth)
 
   useEffect(() => {
@@ -33,18 +34,16 @@ const App = () => {
 
   return (
     <ResizeContext.Provider value={{ width }}>
-      <TyperContainer
-        time={time}
-        setStat={setStat}
-      />
-      {/* <div>{stat.errors.join(" ")}</div>
-      
-      <div> incorrect {stat.incorrect}</div>
-      <div>correct {stat.correct}</div>
-      <div>extra {stat.extra}</div>
-      <div>missed {stat.missed}</div>
-      <div>afk {stat.afk}</div> */}
-      <StatGrid stat={stat} time={time} width={width}/>
+      <Header/>
+      {isTyped == "typing" ? (
+        <TyperContainer
+          time={time}
+          setStat={setStat}
+          setIsTyped={setIsTyped}
+        />
+      ) : (
+        <StatGrid stat={stat} time={time} width={width}/>
+      )}
     </ResizeContext.Provider>
   );
 };

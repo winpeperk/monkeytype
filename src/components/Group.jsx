@@ -25,7 +25,19 @@ const Footer = styled.div(props => `
 
 const Group = ({header, body, footer = null, tooltip = null, fontSize, size}) => {
     return (
-        <Tooltip label={tooltip} placement="top">
+        <Tooltip 
+            label={tooltip}
+            placement="top"
+            sx={{
+                backgroundColor: "rgba(var(--tooltip-background), 0.9)",
+                color: "rgb(var(--background-primary))",
+            }}
+            borderRadius="md"
+            p="1"
+            openDelay={200}
+            closeDelay={100}
+            fontSize={16}
+        >
             <Container cursor={tooltip}>
                 <Header fontSize={fontSize}>{header}</Header>
                 <Body fontSize={fontSize} size={size}>{body}</Body>
