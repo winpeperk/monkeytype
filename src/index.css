@@ -32,22 +32,28 @@ span {
 
 [data-theme="light"] {
     --background-primary: 255, 251, 254;
-    --text-primary: 231, 171, 208;
+    --keypad-background: 239, 224, 241;
+    --text-primary: 225, 164, 200;
     --text-secondary: 185, 65, 137;
     --extra: 151, 121, 227;
     --errors: 92, 41, 84;
     --tooltip-background: 32, 33, 36;
-    --logo: 185, 65, 137;
+    --logo-first: var(--errors);
+    --logo-second: var(--errors);
+    --menu-focus: var(--errors);
 }
 
 [data-theme="dark"] {
     --background-primary: 14, 14, 14;
+    --keypad-background: 32, 33, 36;
     --text-primary: 124, 126, 127;
     --text-secondary: 255, 153, 0;
     --extra: 192, 14, 19;
     --errors: 192, 14, 19;
     --tooltip-background: 198, 198, 198;
-    --logo: 198, 198, 198;
+    --logo-first: var(--tooltip-background);
+    --logo-second: var(--text-secondary);
+    --menu-focus: var(--tooltip-background);
 }
 
 .correct {

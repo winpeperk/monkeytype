@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Typer from "./Typer";
 
-const TyperContainer = ({ time, setStat, setIsTyped }) => {
+const TyperContainer = ({ time, setStat, setIsTyped, initialText }) => {
   const error = useRef(0);
   const rawChars = useRef(0);
 
@@ -63,9 +63,7 @@ const TyperContainer = ({ time, setStat, setIsTyped }) => {
 
   return (
       <Typer
-        initialText={
-          "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci."
-        }
+        initialText={initialText}
         addError={addError}
         addRaw={addRaw}
       />

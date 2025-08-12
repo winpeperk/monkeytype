@@ -17,6 +17,10 @@ const Global = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     line-height: 100%;
+    ::selection {
+      background-color: rgb(var(--text-secondary));
+      color: rgb(var(--background-primary));
+    }
   }
   body {
     background: rgb(var(--background-primary));

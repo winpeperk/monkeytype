@@ -20,10 +20,10 @@ const Header = () => {
                         fontFamily: "Lexend Deca",
                     }}
                 >
-                    <span style={{color: "rgb(var(--logo))"}}>
+                    <span style={{color: "rgb(var(--logo-first))"}}>
                         kitty
                     </span>
-                    <span style={{color: "rgb(var(--text-secondary))"}}>
+                    <span style={{color: "rgb(var(--logo-second))"}}>
                         type
                     </span>
                 </a>
