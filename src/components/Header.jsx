@@ -16,7 +16,7 @@ const Header = () => {
                 <a
                     href="#"
                     style={{
-                        fontSize: "32px",
+                        fontSize: "40px",
                         fontFamily: "Lexend Deca",
                     }}
                 >

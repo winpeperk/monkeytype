@@ -29,6 +29,17 @@ const colors = {
   errors: "rgb(var(--errors))",
 };
 
+const interval = (time, width) => {
+  if(time == 15) {
+    return width < 768 ? 1 : 0
+  } else if(time == 30) {
+    return width < 992 ? (width < 768 ? 4 : 2) : 1
+  } else if(time == 60) {
+    return width < 992 ? (width < 768 ? 9 : 4) : 3
+  } 
+  return width < 992 ? (width < 768 ? 16 :  9) : 6
+}
+
 const Chart = ({ time, errors, wpm, raw }) => {
   const dataLine = Array.from({ length: time }, (_, index) => ({
     time: index + 1,
@@ -83,7 +94,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
             dataKey="time"
             stroke="rgb(var(--tooltip-background))"
             tick={{ fill: "rgb(var(--text-primary))" }}
-            interval={width < 768 ? 1 : 0}
+            interval={interval(time, width)}
           />
           <YAxis
             yAxisId="left"

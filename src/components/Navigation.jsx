@@ -20,7 +20,7 @@ const Icon = ({IconComponent, src, tooltip = null, mt = 0}) => {
             closeDelay={100}
         >
             <Link href={src} p="8px" color="rgb(var(--text-primary))" _hover={{color: "rgb(var(--logo-second))"}} mt={mt}>
-                <IconComponent size={20}/>
+                <IconComponent size={25}/>
             </Link>
         </Tooltip>
     )
@@ -65,7 +65,7 @@ const UserMenu = () => {
             onMouseLeave={handleClose}
             p="8px"
         >
-            <FaUser size={20}/>
+            <FaUser size={25}/>
         </MenuButton>
         <MenuList
             onMouseEnter={handleOpen}
@@ -87,16 +87,16 @@ const Navigation = () => {
     return (
         <Flex w="100%">
             <Flex gap={2}>
-                <Icon IconComponent={FaKeyboard} src="#" tooltip="start test" mt="1px"/>
+                <Icon IconComponent={FaKeyboard} src="#" tooltip="start test" mt="2px"/>
                 <Icon IconComponent={FaCrown} src="#" tooltip="leaderboards"/>
                 <Icon IconComponent={FaInfo} src="#" tooltip="about"/>
-                <Icon IconComponent={FaCog} src="#" tooltip="settings"/>
+                <Icon IconComponent={FaCog} src="#" tooltip="settings" mt="1px"/>
             </Flex>
             <Spacer/>
             <Flex gap={2}>
                 <Button style={{backgroundColor: "transparent"}} p="0" _hover={{color: "rgb(var(--logo-second))"}} color="rgb(var(--text-primary))">
                     <FaBell 
-                        size={20}
+                        size={25}
                         style={{
                             marginTop: "-4px",
                         }}

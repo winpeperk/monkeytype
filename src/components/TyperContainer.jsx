@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Typer from "./Typer";
 
-const TyperContainer = ({ time, setStat, setIsTyped, initialText }) => {
+const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => {
   const error = useRef(0);
   const rawChars = useRef(0);
 
@@ -66,6 +66,7 @@ const TyperContainer = ({ time, setStat, setIsTyped, initialText }) => {
         initialText={initialText}
         addError={addError}
         addRaw={addRaw}
+        divider={divider}
       />
 
     );

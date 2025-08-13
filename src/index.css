@@ -26,10 +26,6 @@
     font-style: normal;
 }
 
-span {
-    font-size: 30px;
-}
-
 [data-theme="light"] {
     --background-primary: 255, 251, 254;
     --keypad-background: 239, 224, 241;

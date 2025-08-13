@@ -1,6 +1,26 @@
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import cn from "classnames";
+import { Divider } from "@chakra-ui/react";
+
+const CustomDivider = () => (
+  <Divider
+    as="span"
+    orientation="vertical"
+    borderWidth={3}
+    borderRadius={6}
+    height="30px"
+    borderColor="rgb(var(--logo-second))"
+    opacity={1}
+    sx={{
+      animation: "blink 0.7s infinite",
+      "@keyframes blink": {
+        "0%, 100%": {opacity: 1},
+        "50%": {opacity: 0.1}
+      }
+    }}
+  />
+)
 
 const Letter = ({ letter, userLetter, status }) => {
   const letterClass = cn({
@@ -15,7 +35,7 @@ const Letter = ({ letter, userLetter, status }) => {
   return <span className={letterClass}>{letterValue}</span>;
 };
 
-const Word = ({ letters, userLetters, status, active, index }) => {
+const Word = ({ letters, userLetters, status, active, index, divider }) => {
   const hasMistake = () => {
     let mistake = userLetters.length !== letters.length;
     if (mistake) return mistake;
@@ -51,14 +71,18 @@ const Word = ({ letters, userLetters, status, active, index }) => {
       {withSpace ? <span> </span> : null}
       <span className={wordClass}>
         {wordLetters().map(({ letter, userLetter }, index) => (
+          <>
+          {(divider && wordClass === "active-word" && userLetters.length === 0 && index === 0) ? <CustomDivider/> : null}
           <Letter key={index} letter={letter} userLetter={userLetter} status={status}/>
+          {(divider && wordClass === "active-word" && index === userLetters.length - 1) ? <CustomDivider/> : null}
+          </>
         ))}
       </span>
     </>
   );
 };
 
-const Typer = ({ initialText, addError, addRaw }) => {
+const Typer = ({ initialText, addError, addRaw, divider }) => {
   const initialWords = initialText.split(" ").map((word) => ({
     letters: word.split(""),
     userLetters: [],
@@ -136,7 +160,7 @@ const Typer = ({ initialText, addError, addRaw }) => {
 
   return (
     <>
-      <div style={{lineHeight: "250%"}}>
+      <div style={{lineHeight: "250%", fontSize: "25px"}}>
         {typingState.words.map(({ letters, userLetters, status }, index) => (
           <Word
             key={index}
@@ -145,6 +169,7 @@ const Typer = ({ initialText, addError, addRaw }) => {
             status={status}
             active={typingState.activeWord}
             index={index}
+            divider={divider}
           />
         ))}
       </div>
