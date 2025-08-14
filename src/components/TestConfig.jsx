@@ -1,26 +1,32 @@
-import { Text, Flex, Divider as ChakraDivider, Button } from "@chakra-ui/react"
+import { Text, Flex, Divider as ChakraDivider, Button, useTheme } from "@chakra-ui/react"
 import { useRef, useState } from "react"
 import { FaClock, FaAt, FaHashtag, FaFont, FaQuoteLeft } from "react-icons/fa"
 
-const OptionButton = ({color, onClick, children}) => (
+const OptionButton = ({color, onClick, children}) => {
+    const theme = useTheme()
+
+    return (
     <Button
         border="none"
         bg="transparent"
         color={color}
-        _hover={{color: "rgb(var(--menu-focus))", backgroundColor: "transparent"}}
+        _hover={{color: theme.colors.focus , backgroundColor: "transparent"}}
+        _focus={{boxShadow: "none", bg: "transparent"}}
         onClick={onClick}
         fontFamily="IBM Plex Mono"
         fontWeight={400}
+        fontSize={12}
     >
         {children}
     </Button>
-)
-
+)}
 // eslint-disable-next-line no-unused-vars
 const Option = ({Icon, children, onClick}) => {
+    const theme = useTheme()
+
     return (
         <OptionButton
-            color="rgb(var(--text-primary))"
+            color={theme.colors.text_primary}
             onClick={() => onClick(children)}
         >
             <Flex gap={1.5}>
@@ -31,26 +37,35 @@ const Option = ({Icon, children, onClick}) => {
     )
 }
 
-const Divider = () => (
+const Divider = () => {
+    const theme = useTheme()
+
+    return (
     <ChakraDivider
         orientation="vertical"
         borderWidth={4}
         borderRadius={6}
         height="20px"
-        borderColor="rgb(var(--background-primary))"
+        borderColor={theme.colors.bg}
         opacity={1}
         mx="1vw"
     />
-)
+)}
 
 const TimeOptions = ({time, setTime}) => {
-    const times = [15, 30, 60, 120, 1000]
+    const theme = useTheme()
+    const times = [15, 30, 60, 999]
+
+    const handleOption = (curTime) => (e) => {
+        e.preventDefault()
+        setTime(curTime)
+    }
 
     return times.map(curTime => (
         <OptionButton
             key={curTime} 
-            onClick={() => setTime(curTime)}
-            color={curTime == time ? "rgb(var(--text-secondary))" : "rgb(var(--text-primary))"}
+            onClick={handleOption(curTime)}
+            color={curTime == time ? theme.colors.text_secondary : theme.colors.text_primary}
         >
         {curTime}
         </OptionButton>
@@ -58,12 +73,13 @@ const TimeOptions = ({time, setTime}) => {
 }
 
 const WordsOptions = ({word}) => {
+    const theme = useTheme()
     const words = [10, 25, 50, 100]
 
     return words.map(curWord => (
         <OptionButton
             key={word}
-            color={curWord == word ? "rgb(var(--text-secondary))" : "rgb(var(--text-primary))"}
+            color={curWord == word ? theme.colors.text_secondary : theme.colors.text_primary}
         >
             word
         </OptionButton>
@@ -71,6 +87,7 @@ const WordsOptions = ({word}) => {
 }
 
 const TestConfig = ({time, setTime}) => {
+    const theme = useTheme()
     const [isOpen, setOpen] = useState("time")
     const idTimer = useRef(null)
 
@@ -88,7 +105,7 @@ const TestConfig = ({time, setTime}) => {
             }}
             h="45px"
             borderRadius={8}
-            bg="rgb(var(--keypad-background))"
+            bg={theme.colors.keypad_bg}
             mb={10}
             align="center"
             justifyContent="center"

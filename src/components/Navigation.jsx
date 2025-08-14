@@ -1,17 +1,19 @@
 import { FaKeyboard, FaCrown, FaInfo, FaCog, FaBell, FaUser, FaSignOutAlt, FaChartLine } from "react-icons/fa"
 import { FaEarthAmericas } from "react-icons/fa6"
-import { Button, Flex, Tooltip, Spacer, Link, Menu, MenuButton, MenuList, MenuItem, useDisclosure } from "@chakra-ui/react"
+import { Button, Flex, Tooltip, Spacer, Link, Menu, MenuButton, MenuList, MenuItem, useDisclosure, useTheme } from "@chakra-ui/react"
 import { useRef } from "react"
 
 // eslint-disable-next-line no-unused-vars
 const Icon = ({IconComponent, src, tooltip = null, mt = 0}) => { 
+    const theme = useTheme()
+
     return (
         <Tooltip 
             label={tooltip}
             placement="bottom"
             sx={{
-                backgroundColor: "rgba(var(--tooltip-background), 0.9)",
-                color: "rgb(var(--background-primary))",
+                backgroundColor: theme.colors.opacity_tooltip_bg,
+                color: theme.colors.bg,
             }}
             borderRadius="md"
             p="1"
@@ -19,30 +21,34 @@ const Icon = ({IconComponent, src, tooltip = null, mt = 0}) => {
             openDelay={200}
             closeDelay={100}
         >
-            <Link href={src} p="8px" color="rgb(var(--text-primary))" _hover={{color: "rgb(var(--logo-second))"}} mt={mt}>
+            <Link href={src} p="8px" color={theme.colors.text_primary} _hover={{color: theme.colors.logo_second}} mt={mt}>
                 <IconComponent size={25}/>
             </Link>
         </Tooltip>
     )
 }
 // eslint-disable-next-line no-unused-vars
-const UserMenuItem = ({MenuIcon, isFirst, isLast, children}) => (
+const UserMenuItem = ({MenuIcon, children}) => {
+    const theme = useTheme()
+
+    return (
     <MenuItem 
         as="a" 
         href="#" 
         bg="transparent"
         borderRadius={6}
         _hover={{
-            backgroundColor: "rgb(var(--menu-focus))", 
-            color: "rgb(var(--keypad-background))"
+            backgroundColor: theme.colors.focus, 
+            color: theme.colors.keypad_bg
         }}
     >
         <MenuIcon style={{marginRight: "10px"}}/>
         {children}
     </MenuItem>
-)
+)}
 
 const UserMenu = () => {
+    const theme = useTheme()
     const { isOpen, onOpen, onClose } = useDisclosure()
     const idTimer = useRef(null)
 
@@ -59,8 +65,8 @@ const UserMenu = () => {
     return (
     <Menu isOpen={isOpen}>
         <MenuButton 
-            color="rgb(var(--text-primary))"
-            _hover={{color: "rgb(var(--logo-second))"}}
+            color={theme.colors.text_primary}
+            _hover={{color: theme.colors.logo_second}}
             onMouseEnter={handleOpen}
             onMouseLeave={handleClose}
             p="8px"
@@ -70,8 +76,8 @@ const UserMenu = () => {
         <MenuList
             onMouseEnter={handleOpen}
             onMouseLeave={handleClose}
-            bg="rgb(var(--keypad-background))"
-            color="rgb(var(--menu-focus))"
+            bg={theme.colors.keypad_bg}
+            color={theme.colors.focus}
             p={0}
             border="none"
         >
@@ -84,6 +90,8 @@ const UserMenu = () => {
 )}
 
 const Navigation = () => {
+    const theme = useTheme()
+
     return (
         <Flex w="100%">
             <Flex gap={2}>
@@ -94,7 +102,7 @@ const Navigation = () => {
             </Flex>
             <Spacer/>
             <Flex gap={2}>
-                <Button style={{backgroundColor: "transparent"}} p="0" _hover={{color: "rgb(var(--logo-second))"}} color="rgb(var(--text-primary))">
+                <Button style={{backgroundColor: "transparent"}} p="0" _hover={{color: theme.colors.logo_second}} color={theme.colors.text_primary}>
                     <FaBell 
                         size={25}
                         style={{

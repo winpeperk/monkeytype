@@ -1,10 +1,11 @@
 import Navigation from "./Navigation"
-import { Flex } from "@chakra-ui/react"
+import { Flex, useTheme } from "@chakra-ui/react"
 import ResizeContext from "./ResizeContext"
 import { useContext } from "react"
 
 const Header = () => {
     const { width } = useContext(ResizeContext)
+    const theme = useTheme()
 
     return (
         <Flex
@@ -20,10 +21,10 @@ const Header = () => {
                         fontFamily: "Lexend Deca",
                     }}
                 >
-                    <span style={{color: "rgb(var(--logo-first))"}}>
+                    <span style={{color: theme.colors.logo_first}}>
                         kitty
                     </span>
-                    <span style={{color: "rgb(var(--logo-second))"}}>
+                    <span style={{color: theme.colors.logo_second}}>
                         type
                     </span>
                 </a>

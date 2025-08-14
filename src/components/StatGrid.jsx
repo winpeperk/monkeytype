@@ -105,10 +105,7 @@ const StatGrid = ({stat, time}) => {
     const {incorrect, correct, extra, missed, correctChars, rawChars, errors, wpm, raw, afk} = stat
     return (
         <Grid
-            h={{
-                base: "110%",
-                md: "70%"
-            }}
+            w="100%"
             templateColumns={{
                 base: "1fr",
                 lg: "1fr 7fr"

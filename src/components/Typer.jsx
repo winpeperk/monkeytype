@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import cn from "classnames";
-import { Divider } from "@chakra-ui/react";
+import { Divider, useTheme } from "@chakra-ui/react";
 
-const CustomDivider = () => (
+const CustomDivider = () => {
+  const theme = useTheme()
+
+  return (
   <Divider
     as="span"
     orientation="vertical"
     borderWidth={3}
     borderRadius={6}
     height="30px"
-    borderColor="rgb(var(--logo-second))"
+    borderColor={theme.colors.logo_second}
     opacity={1}
     sx={{
       animation: "blink 0.7s infinite",
@@ -20,7 +23,7 @@ const CustomDivider = () => (
       }
     }}
   />
-)
+)}
 
 const Letter = ({ letter, userLetter, status }) => {
   const letterClass = cn({

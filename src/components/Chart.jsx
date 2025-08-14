@@ -1,4 +1,4 @@
-import { Box, Text, Flex } from "@chakra-ui/react";
+import { Box, Text, Flex, useTheme } from "@chakra-ui/react";
 import {
   XAxis,
   YAxis,
@@ -23,12 +23,6 @@ const ChartContainer = styled.div`
   }
 `
 
-const colors = {
-  wpm: "rgb(var(--text-secondary))",
-  raw: "rgb(var(--text-primary))",
-  errors: "rgb(var(--errors))",
-};
-
 const interval = (time, width) => {
   if(time == 15) {
     return width < 768 ? 1 : 0
@@ -41,6 +35,14 @@ const interval = (time, width) => {
 }
 
 const Chart = ({ time, errors, wpm, raw }) => {
+  const theme = useTheme()
+
+  const colors = {
+    wpm: theme.colors.text_secondary,
+    raw: theme.colors.text_primary,
+    errors: theme.colors.errors
+  };
+
   const dataLine = Array.from({ length: time }, (_, index) => ({
     time: index + 1,
     wpm: wpm[index],
@@ -60,8 +62,8 @@ const Chart = ({ time, errors, wpm, raw }) => {
   const handleTooltip = ({ payload, label, active }) =>
     active ? (
       <Box
-        bg="rgba(var(--tooltip-background), 0.9)"
-        color="rgb(var(--background-primary))"
+        bg={theme.colors.opacity_tooltip_bg}
+        color={theme.colors.bg}
         borderRadius="md"
         p="2"
       >
@@ -89,19 +91,19 @@ const Chart = ({ time, errors, wpm, raw }) => {
     <ChartContainer>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={dataLine} margin={{ top: 15 }}>
-          <CartesianGrid yAxisId="left" stroke="rgb(var(--tooltip-background))" />
+          <CartesianGrid yAxisId="left" stroke={theme.colors.tooltip_bg} />
           <XAxis
             dataKey="time"
-            stroke="rgb(var(--tooltip-background))"
-            tick={{ fill: "rgb(var(--text-primary))" }}
+            stroke={theme.colors.tooltip_bg}
+            tick={{ fill: theme.colors.text_primary }}
             interval={interval(time, width)}
           />
           <YAxis
             yAxisId="left"
             orientation="left"
             type="number"
-            stroke="rgb(var(--tooltip-background))"
-            tick={{ fill: "rgb(var(--text-primary))" }}
+            stroke={theme.colors.tooltip_bg}
+            tick={{ fill: theme.colors.text_primary }}
           >
             <Label
               value="words per minute"
@@ -116,8 +118,8 @@ const Chart = ({ time, errors, wpm, raw }) => {
             allowDecimals={false}
             type="number"
             domain={[0, "dataMax"]}
-            stroke="rgb(var(--tooltip-background))"
-            tick={{ fill: "rgb(var(--text-primary))" }}
+            stroke={theme.colors.tooltip_bg}
+            tick={{ fill: theme.colors.text_primary }}
           >
             <Label
               value="errors"
@@ -132,7 +134,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
             yAxisId="left"
             type="monotone"
             dataKey="raw"
-            fill="rgba(var(--tooltip-background), 0.1)"
+            fill={theme.colors.area_raw}
             stroke={colors.raw}
             strokeWidth={3}
             activeDot={handleDots("raw")}
@@ -142,7 +144,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
             yAxisId="left"
             type="monotone"
             dataKey="wpm"
-            fill="rgba(var(--tooltip-background), 0.3)"
+            fill={theme.colors.area_wpm}
             stroke={colors.wpm}
             strokeWidth={3}
             activeDot={handleDots("wpm")}

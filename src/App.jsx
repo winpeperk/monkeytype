@@ -26,7 +26,7 @@ const App = () => {
   const [stat, setStat] = useImmer(initStat);
   const [isTyped, setIsTyped] = useState("typing");
   const [time, setTime] = useState(15)
-  const [divider, setDivider] = useState(null)
+  const [divider, setDivider] = useState(true)
   const [width, setWidth] = useState(window.innerWidth)
   const [text, setText] = useState("Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
   const k = useRef(0);
@@ -51,14 +51,16 @@ const App = () => {
   }, [time, setStat, k])
 
   useEffect(() => {
-    let initDivider = localStorage.getItem(storageKey)
-    if(initDivider == null) {
-      initDivider = true
-      localStorage.setItem(storageKey, JSON.stringify(initDivider))
-    } else {
-      initDivider = JSON.parse(initDivider)
-    }
+    let initDivider = JSON.parse(localStorage.getItem(storageKey))
     setDivider(initDivider)
+
+    const handleStorage = (event) => {
+      if(event.key != storageKey) return
+      const newItem = JSON.parse(localStorage.getItem(event.key))
+      setDivider(newItem)
+    }
+    window.addEventListener("storage", handleStorage)
+    return () => window.removeEventListener("storage", handleStorage)
   }, [])
 
   useEffect(() => {

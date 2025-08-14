@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Tooltip } from "@chakra-ui/react"
+import { Tooltip, useTheme } from "@chakra-ui/react"
 
 const Container = styled.div(props => `
     display: flex;
@@ -15,22 +15,24 @@ const Header = styled.div(props => `
 
 const Body = styled.div(props => `
     font-size: ${props.fontSize ? props.size == "small" ? `${props.fontSize * 0.5}px` : `${props.fontSize}px` : "32px"};
-    color: rgb(var(--text-secondary));
+    color: ${props.color};
 `)
 
 const Footer = styled.div(props => `
     font-size: ${props.fontSize ? `${props.fontSize * 0.4}px` : "12px"};
-    color: rgba(var(--text-primary), 0.6);
+    color: ${props.color};
 `)
 
 const Group = ({header, body, footer = null, tooltip = null, fontSize, size}) => {
+    const theme = useTheme()
+
     return (
         <Tooltip 
             label={tooltip}
             placement="top"
             sx={{
-                backgroundColor: "rgba(var(--tooltip-background), 0.9)",
-                color: "rgb(var(--background-primary))",
+                backgroundColor: theme.colors.opacity_tooltip_bg,
+                color: theme.colors.bg,
             }}
             borderRadius="md"
             p="1"
@@ -40,8 +42,8 @@ const Group = ({header, body, footer = null, tooltip = null, fontSize, size}) =>
         >
             <Container cursor={tooltip}>
                 <Header fontSize={fontSize}>{header}</Header>
-                <Body fontSize={fontSize} size={size}>{body}</Body>
-                {footer && <Footer fontSize={fontSize}>{footer}</Footer>}
+                <Body fontSize={fontSize} size={size} color={theme.colors.text_secondary}>{body}</Body>
+                {footer && <Footer fontSize={fontSize} color={theme.colors.opacity_text_primary}>{footer}</Footer>}
             </Container>
         </Tooltip>
     )

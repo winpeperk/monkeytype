@@ -1,8 +1,7 @@
-import { ChakraProvider, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import Theme from "./components/Theme";
-import { createGlobalStyle } from "styled-components";
 import "./index.css";
 
 const containerSize = {
@@ -11,32 +10,10 @@ const containerSize = {
   md: "85%"
 };
 
-const Global = createGlobalStyle`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    line-height: 100%;
-    ::selection {
-      background-color: rgb(var(--text-secondary));
-      color: rgb(var(--background-primary));
-    }
-  }
-  body {
-    background: rgb(var(--background-primary));
-    font-family: "Roboto Mono";
-    color: rgb(var(--text-primary));
-  }
-`;
-
 createRoot(document.getElementById("root")).render(
-  <ChakraProvider disableGlobalStyle resetCSS>
-    <Theme>
-      <Container maxWidth={containerSize} my={10} mx="auto" justify="center"> 
-        <Global />
-        <App />
-      </Container>
-      <Theme.Button />
-    </Theme>
-  </ChakraProvider>
+  <Theme>
+    <Container maxWidth={containerSize} my={10} mx="auto" justify="center"> 
+      <App />
+    </Container>
+  </Theme>
 );
