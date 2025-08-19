@@ -34,8 +34,9 @@ const interval = (time, width) => {
   return width < 992 ? (width < 768 ? 16 :  9) : 6
 }
 
-const Chart = ({ time, errors, wpm, raw }) => {
+const Chart = ({ settings, errors, wpm, raw }) => {
   const theme = useTheme()
+  const {elapsedTime} = settings
 
   const colors = {
     wpm: theme.colors.text_secondary,
@@ -43,7 +44,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
     errors: theme.colors.errors
   };
 
-  const dataLine = Array.from({ length: time }, (_, index) => ({
+  const dataLine = Array.from({ length: elapsedTime }, (_, index) => ({
     time: index + 1,
     wpm: wpm[index],
     raw: raw[index],
@@ -96,7 +97,7 @@ const Chart = ({ time, errors, wpm, raw }) => {
             dataKey="time"
             stroke={theme.colors.tooltip_bg}
             tick={{ fill: theme.colors.text_primary }}
-            interval={interval(time, width)}
+            interval={interval(elapsedTime, width)}
           />
           <YAxis
             yAxisId="left"

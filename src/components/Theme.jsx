@@ -84,9 +84,11 @@ const Theme = ({ children }) => {
   const [themeIndex, setThemeIndex] = useState(0);
 
   useEffect(() => {
-    const theme = localStorage.getItem(storageKey)
-    const index = themesNames.findIndex(curTheme => curTheme == theme)
-    setThemeIndex(index)
+    let theme = localStorage.getItem(storageKey)
+    if(theme != null) {
+      const index = themesNames.findIndex(curTheme => curTheme == theme)
+      setThemeIndex(index)
+    }
 
     const handleStorage = (event) => {
       if (event.key !== storageKey) return;

@@ -101,8 +101,10 @@ const StatAfk = ({time, afk}) => {
     )
 }
 
-const StatGrid = ({stat, time}) => {
+const StatGrid = ({stat, settings}) => {
     const {incorrect, correct, extra, missed, correctChars, rawChars, errors, wpm, raw, afk} = stat
+    const {elapsedTime} = settings
+    
     return (
         <Grid
             w="100%"
@@ -137,7 +139,7 @@ const StatGrid = ({stat, time}) => {
             </Flex>
         </GridItem>
         <GridItem>
-            <Chart time={time} errors={stat.errors} wpm={stat.wpm} raw={stat.raw}/>
+            <Chart settings={settings} errors={stat.errors} wpm={stat.wpm} raw={stat.raw}/>
         </GridItem>
         <GridItem
         colSpan={{
@@ -162,7 +164,7 @@ const StatGrid = ({stat, time}) => {
                 }}
             >
                 <GridItem>
-                    <RoundInfo time={time}/>
+                    <RoundInfo time={elapsedTime}/>
                 </GridItem>
                 <GridItem>
                     <StatRaw raw={raw}/>
@@ -174,7 +176,7 @@ const StatGrid = ({stat, time}) => {
                     <StatConsistency raw={raw}/>
                 </GridItem>
                 <GridItem>
-                    <StatAfk time={time} afk={afk}/>
+                    <StatAfk time={elapsedTime} afk={afk}/>
                 </GridItem>
             </Grid>
         </GridItem>

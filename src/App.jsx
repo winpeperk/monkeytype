@@ -24,8 +24,20 @@ const initStat = {
 
 const App = () => {
   const [stat, setStat] = useImmer(initStat);
-  const [isTyped, setIsTyped] = useState("typing");
-  const [time, setTime] = useState(15)
+  const [isFinished, setFinish] = useState(false);
+  const [settings, setSettings] = useImmer({
+    mode: "time",
+    options: {
+      time: 15, 
+      words: 10, 
+      quote: "all"
+    },
+    extraMode: {
+      punctuation: false,
+      numbers: false,
+    },
+    elapsedTime: 0
+  })
   const [divider, setDivider] = useState(true)
   const [width, setWidth] = useState(window.innerWidth)
   const [text, setText] = useState("Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
@@ -43,16 +55,20 @@ const App = () => {
 
   useEffect(() => {
     setStat(initStat)
+    setSettings(prev => {prev.elapsedTime = 0})
+    setFinish(false)
     k.current++
     if(k.current % 2 == 0)
-      setText("Lorem sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
+      setText("Dogs sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
     else
-      setText("Kakish sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
-  }, [time, setStat, k])
+      setText("Cats sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
+  }, [settings.mode, settings.options, settings.extraMode, setStat, setSettings])
 
   useEffect(() => {
     let initDivider = JSON.parse(localStorage.getItem(storageKey))
-    setDivider(initDivider)
+    if(initDivider != null) {
+      setDivider(initDivider)
+    }
 
     const handleStorage = (event) => {
       if(event.key != storageKey) return
@@ -71,20 +87,21 @@ const App = () => {
     <ResizeContext.Provider value={{ width }}>
       <Header/>
       <Center flexDirection="column">
-        {isTyped == "typing" ? (
+        {!isFinished ? (
           <>
-            <TestConfig time={time} setTime={setTime}/>
+            <TestConfig settings={settings} setSettings={setSettings}/>
             <TyperContainer
-              time={time}
+              settings={settings}
+              setSettings={setSettings}
               setStat={setStat}
-              setIsTyped={setIsTyped}
+              setFinish={setFinish}
               key={text}
               initialText={text}
               divider={divider}
             />
           </>
         ) : (
-          <StatGrid stat={stat} time={time} width={width}/>
+          <StatGrid stat={stat} settings={settings}/>
         )}
       </Center>
       <Button onClick={() => setDivider(prev => !prev)}>switch divider</Button>

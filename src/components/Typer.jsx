@@ -75,9 +75,9 @@ const Word = ({ letters, userLetters, status, active, index, divider }) => {
       <span className={wordClass}>
         {wordLetters().map(({ letter, userLetter }, index) => (
           <>
-          {(divider && wordClass === "active-word" && userLetters.length === 0 && index === 0) ? <CustomDivider/> : null}
-          <Letter key={index} letter={letter} userLetter={userLetter} status={status}/>
-          {(divider && wordClass === "active-word" && index === userLetters.length - 1) ? <CustomDivider/> : null}
+            {(divider && wordClass === "active-word" && userLetters.length === 0 && index === 0) ? <CustomDivider/> : null}
+            <Letter key={index} letter={letter} userLetter={userLetter} status={status}/>
+            {(divider && wordClass === "active-word" && index === userLetters.length - 1) ? <CustomDivider/> : null}
           </>
         ))}
       </span>

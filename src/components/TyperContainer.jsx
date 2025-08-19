@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import Typer from "./Typer";
 
-const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => {
+const TyperContainer = ({ settings, setSettings, setStat, setFinish, initialText, divider }) => {
+  const {mode, options} = settings
+
   const error = useRef(0);
   const rawChars = useRef(0);
 
@@ -9,7 +11,8 @@ const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => 
   const addRaw = () => {rawChars.current += 1};
 
   useEffect(() => {
-    let elapsedSeconds = 0;
+    if(mode != "time") return;
+
     const calculateCorrectChars = () => {
       const correctWords = document.querySelectorAll(".correct-word");
       let result = Math.max(0, correctWords.length - 1);
@@ -25,24 +28,29 @@ const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => 
       }
       return result
     }
+    
     const intervalId = setInterval(() => {
-      elapsedSeconds++;
+      setSettings(prev => {
+        prev.elapsedTime += 1
+        const currentElapsedTime = prev.elapsedTime
+
+        const correctChars = calculateCorrectChars()
       
-      const correctChars = calculateCorrectChars()
-      
-      setStat(prev => {
-        const {errors, wpm, raw} = prev
-        errors.push(error.current);
-        error.current = 0;
-        
-        wpm.push(Math.round((correctChars / 5) / (elapsedSeconds / 60)));
-        
-        if(rawChars.current == 0) {
-          prev.afk += 1
-        }
-        raw.push(Math.round(((rawChars.current / 5) / (elapsedSeconds / 60))));
+        setStat(prev => {
+          const {errors, wpm, raw} = prev
+          errors.push(error.current);
+          error.current = 0;
+          
+          wpm.push(Math.round((correctChars / 5) / (currentElapsedTime / 60)));
+          
+          if(rawChars.current == 0) {
+            prev.afk += 1
+          }
+          raw.push(Math.round(((rawChars.current / 5) / (currentElapsedTime / 60))));
+        })
       })
     }, 1000);
+
     const timeoutId = setTimeout(() => {
       clearInterval(intervalId)
       setStat(prev => {
@@ -53,13 +61,15 @@ const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => 
         prev.extra = document.querySelectorAll(".extra").length
         prev.missed = document.querySelectorAll(".missed").length
       })
-      setIsTyped("typed")
-    }, time * 1000);
+      setFinish(true)
+    }, options[mode] * 1000);
+
     return () => {
       clearInterval(intervalId);
       clearTimeout(timeoutId);
     };
-  }, [time, setStat, setIsTyped]);
+
+  }, [mode, options, setFinish, setSettings, setStat]);
 
   return (
       <Typer
@@ -68,8 +78,7 @@ const TyperContainer = ({ time, setStat, setIsTyped, initialText, divider }) => 
         addRaw={addRaw}
         divider={divider}
       />
-
-    );
+    )
 };
 
 export default TyperContainer;
