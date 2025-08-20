@@ -6,6 +6,7 @@ import ResizeContext from "./components/ResizeContext";
 import Header from "./components/Header";
 import TestConfig from "./components/TestConfig";
 import { Center, Button } from "@chakra-ui/react";
+import SwitchTextLanguage from "./components/SwitchTextLanguage"
 
 const storageKey = "divider"
 
@@ -36,7 +37,8 @@ const App = () => {
       punctuation: false,
       numbers: false,
     },
-    elapsedTime: 0
+    elapsedTime: 0,
+    language: "russian"
   })
   const [divider, setDivider] = useState(true)
   const [width, setWidth] = useState(window.innerWidth)
@@ -62,7 +64,7 @@ const App = () => {
       setText("Dogs sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
     else
       setText("Cats sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
-  }, [settings.mode, settings.options, settings.extraMode, setStat, setSettings])
+  }, [settings.mode, settings.options, settings.extraMode, settings.language, setStat, setSettings])
 
   useEffect(() => {
     let initDivider = JSON.parse(localStorage.getItem(storageKey))
@@ -90,6 +92,7 @@ const App = () => {
         {!isFinished ? (
           <>
             <TestConfig settings={settings} setSettings={setSettings}/>
+            <SwitchTextLanguage settings={settings} setSettings={setSettings}/>
             <TyperContainer
               settings={settings}
               setSettings={setSettings}

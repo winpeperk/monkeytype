@@ -1,7 +1,8 @@
-import { Text, Box, Flex, Divider as ChakraDivider, Button, useTheme, useDisclosure, Modal, ModalOverlay, ModalContent, ModalBody } from "@chakra-ui/react"
+import { Text, Flex, Divider as ChakraDivider, Button, useTheme, Spacer } from "@chakra-ui/react"
 import { FaClock, FaAt, FaHashtag, FaFont, FaQuoteLeft, FaCog } from "react-icons/fa"
 import { useContext } from "react"
 import ResizeContext from "./ResizeContext"
+import Modal from "./Modal"
 
 const Divider = () => {
     const theme = useTheme()
@@ -44,33 +45,10 @@ const Option = ({Icon = null, onClick, active, children}) => {
     )
 }
 
-const MobileOption = ({ onClick, active, isDisabled, children}) => {
-    const theme = useTheme()
-
-    return (
-        <Button
-            isDisabled={isDisabled}
-            border="none"
-            w="250px"
-            p="8px"
-            bg={active ? theme.colors.text_secondary : theme.colors.keypad_bg }
-            color={active ? theme.colors.bg : theme.colors.focus}
-            _hover={{color: theme.colors.bg, bg: theme.colors.focus}}
-            _focus={{boxShadow: "none"}}
-            onClick={onClick}
-            fontFamily="IBM Plex Mono"
-            fontWeight={400}
-            fontSize="20px"
-        >
-            <Text>{children}</Text>
-        </Button>
-    )
-}
-
 const Options = ({ options, activeOption, onClick}) => {
     const { width } = useContext(ResizeContext)
 
-    const Component = width >= 768 ? Option : MobileOption
+    const Component = width >= 768 ? Option : Modal.Button
     
     return options.map(curOption => (
         <Component
@@ -83,58 +61,56 @@ const Options = ({ options, activeOption, onClick}) => {
     ))
 }
 
-const MobileModalButton = ({width, children}) => {
-    const theme = useTheme()
-    const {isOpen, onOpen, onClose} = useDisclosure()
+const MobileModal = ({children}) => {
+    const { width } = useContext(ResizeContext)
 
-    return width >= 768 ? <>{children}</> : (
-        <>
-            <Button w="180px" onClick={onOpen} bg={theme.colors.keypad_bg} color={theme.colors.text_primary} fontSize="13px" fontFamily="IBM Plex Mono" _hover={{bg: theme.colors.focus, color: theme.colors.keypad_bg}}>
-                <Flex gap={2}>
-                    <FaCog/>
-                    Test settings
-                </Flex>
-            </Button>
-            <Modal blockScrollOnMount={false}  isCentered isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay/>
-                <ModalContent h="650px" w="300px" bg={theme.colors.bg} borderColor={theme.colors.keypad_bg} borderWidth="4px" borderRadius={10}>
-                    <ModalBody alignContent="center" justifyItems="center" h="100%">
-                        {children}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-        </>
+    const ButtonContent = (
+        <Flex gap={2}>
+            <FaCog/>
+            Test settings
+        </Flex>
     )
+    
+    return width >= 768 ? <>{children}</> : <Modal buttonContent={ButtonContent}>{children}</Modal>
 }
 
 const TestConfig = ({ settings, setSettings }) => {
     const theme = useTheme()
     const { width } = useContext(ResizeContext)
-
-    const Component = width >= 768 ? Option : MobileOption
- 
     const {mode, options, extraMode} = settings
     const {punctuation, numbers} = extraMode
 
-    const times = [15, 30, 60, 999]
-    const words = [10, 25, 50, 100]
-    const quote = ["all", "short", "medium", "long", "thicc"]
+    const listOptions = {
+        time: [15, 30, 60, 999],
+        words: [10, 25, 50, 100],
+        quote: ["all", "short", "medium", "long", "thicc"]
+    }
 
-    const setMode = (curMode) => () => mode != curMode ? setSettings(prev => {prev.mode = curMode}) : null
-    const setOption = (curOption) => () => options[mode] != curOption ? setSettings(prev => {prev.options[mode] = curOption}) : null
+    const setMode = (curMode) => () => setSettings(prev => {
+        prev.mode = curMode
+        if(curMode == "quote") {
+            prev.extraMode.punctuation = false
+            prev.extraMode.numbers = false
+        }
+    })
+    const setOption = (curOption) => () => setSettings(prev => {prev.options[mode] = curOption})
     const setPunctuation = () => setSettings(prev => {prev.extraMode.punctuation = !prev.extraMode.punctuation})
     const setNumbers = () => setSettings(prev => {prev.extraMode.numbers = !prev.extraMode.numbers})
 
+    const Component = width >= 768 ? Option : Modal.Button
+
     return (
-        <MobileModalButton width={width}>
+        <MobileModal>
             <Flex
                 direction={{
                     base: "column",
                     md: "row"
                 }}
                 w={{
-                    sm: "95%",
-                    lg: "85%"
+                    base: "100%"
+                }}
+                maxW={{
+                    md: "fit-content"
                 }}
                 h={{
                     base: "100%",
@@ -151,36 +127,28 @@ const TestConfig = ({ settings, setSettings }) => {
                     md: theme.colors.keypad_bg
                 }}
                 mb={{
-                    sm: 10
+                    md: 10
                 }}
                 px={{
-                    sm: 5
+                    md: 5
                 }}
                 align="center"
                 justifyContent="center"
             >
                 {mode !== "quote" || width < 768 ? (
                     <>
-                        <Component Icon={FaAt} onClick={setPunctuation} active={punctuation} isDisabled={mode !== "time"}>punctuation</Component>
-                        <Component Icon={FaHashtag} onClick={setNumbers} active={numbers} isDisabled={mode !== "time"}>numbers</Component>
-                        {width >= 768 ? <Divider/> : <Box/>}
+                        <Component Icon={FaAt} onClick={setPunctuation} active={punctuation} isDisabled={mode == "quote"}>punctuation</Component>
+                        <Component Icon={FaHashtag} onClick={setNumbers} active={numbers} isDisabled={mode == "quote"}>numbers</Component>
+                        {width >= 768 ? <Divider/> : <Spacer/>}
                     </>
                 ) : null}
                 <Component Icon={FaClock} onClick={setMode("time")} active={mode == "time"}>time</Component>
                 <Component Icon={FaFont} onClick={setMode("words")} active={mode == "words"}>words</Component>
                 <Component Icon={FaQuoteLeft} onClick={setMode("quote")} active={mode == "quote"}>quote</Component>
-                {width >= 768 ? <Divider/> : <Box/>}
-                {(mode == "time") ? (
-                    <Options options={times} activeOption={options[mode]} onClick={setOption}/>
-                ) : 
-                (mode == "words") ? (
-                    <Options options={words} activeOption={options[mode]} onClick={setOption}/>
-                ) : 
-                (mode == "quote") ? (
-                    <Options options={quote} activeOption={options[mode]} onClick={setOption}/>
-                ) : null}
+                {width >= 768 ? <Divider/> : <Spacer/>}
+                <Options options={listOptions[mode]} activeOption={options[mode]} onClick={setOption}/>
             </Flex>
-        </MobileModalButton>
+        </MobileModal>
     )
 }
 
