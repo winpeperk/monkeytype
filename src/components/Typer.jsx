@@ -85,14 +85,14 @@ const Word = ({ letters, userLetters, status, active, index, divider }) => {
   );
 };
 
-const Typer = ({ initialText, addError, addRaw, divider }) => {
+const Typer = ({ initialText, addCorrect, addError, addRaw, divider, setTestState }) => {
   const initialWords = initialText.split(" ").map((word) => ({
     letters: word.split(""),
     userLetters: [],
-    status: "inProgress",
+    status: "typing",
   }));
 
-  const [typingState, setTypingState] = useImmer({
+  const [textState, setTextState] = useImmer({
     words: initialWords,
     activeWord: 0,
   });
@@ -100,14 +100,10 @@ const Typer = ({ initialText, addError, addRaw, divider }) => {
   useEffect(() => {
     const checkIncorrectLetter = ({letters, userLetters}) => {
       const index = userLetters.length - 1
-      // Если индекс выходит за пределы длины letters, это лишняя буква
-      if (index >= letters.length) {
-        // Лишние буквы не считаются ошибками, они отображаются как "extra"
-        return
-      }
-      // Если буквы не совпадают, это ошибка
-      if (letters[index] !== userLetters[index]) {
+      if (letters[index] !== userLetters[index] || userLetters.length > letters.length) {
         addError()
+      } else if (letters[index] == userLetters[index]) {
+        addCorrect()
       }
     }
     const checkExtraSpace = ({letters, userLetters}) => {
@@ -116,42 +112,51 @@ const Typer = ({ initialText, addError, addRaw, divider }) => {
       }
     }
     const handleKeyDown = (e) => {
-      setTypingState((prev) => {
+      setTextState((prev) => {
         const { words, activeWord } = prev;
         const active = words[activeWord]
-        const typedLetters = active.userLetters;
+        const activeIsLastWord = activeWord == words.length - 1
+
         switch (e.key) {
           case "Tab": {
             //запрос к новому тексту
             break;
           }
           case "Backspace": {
-            if (typedLetters.length === 0) {
+            if (active.userLetters.length === 0) {
               if (activeWord === 0) return;
-              words[activeWord - 1].status = "inProgress";
+              words[activeWord - 1].status = "typing";
               prev.activeWord--;
             } else {
-              typedLetters.pop();
+              active.userLetters.pop();
             }
             addRaw();
             break;
           }
           case " ": {
-            if (typedLetters.length === 0) {
+            if (active.userLetters.length === 0) {
               addError()
-            } else if (activeWord < words.length - 1) {
+            } else {
               checkExtraSpace(active)
               active.status = "done";
-              prev.activeWord++;
+              if(activeIsLastWord) {
+                setTestState("calculating")
+              } else {
+                prev.activeWord++;
+              }
             }
             addRaw()
             break;
           }
           default: {
             if (e.key.length !== 1) break;
+            setTestState(prev => prev == "pending" ? "running" : prev)
             active.userLetters.push(e.key);
             checkIncorrectLetter(active)
             addRaw()
+            if(activeIsLastWord && active.userLetters.length == active.letters.length) {
+              setTestState("calculating")
+            }
             break;
           }
         }
@@ -159,18 +164,18 @@ const Typer = ({ initialText, addError, addRaw, divider }) => {
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [ addError, addRaw, setTypingState]);
+  }, [addCorrect, addError, addRaw, setTestState, setTextState]);
 
   return (
     <>
       <div style={{lineHeight: "250%", fontSize: "25px"}}>
-        {typingState.words.map(({ letters, userLetters, status }, index) => (
+        {textState.words.map(({ letters, userLetters, status }, index) => (
           <Word
             key={index}
             letters={letters}
             userLetters={userLetters}
             status={status}
-            active={typingState.activeWord}
+            active={textState.activeWord}
             index={index}
             divider={divider}
           />

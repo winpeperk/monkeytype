@@ -24,13 +24,15 @@ const ChartContainer = styled.div`
 `
 
 const interval = (time, width) => {
-  if(time == 15) {
-    return width < 768 ? 1 : 0
-  } else if(time == 30) {
+  if(time < 15) {
+    return 0
+  } else if(time == 15) {
+    return width < 992 ? 1 : 0
+  } else if(time <= 30) {
     return width < 992 ? (width < 768 ? 4 : 2) : 1
-  } else if(time == 60) {
+  } else if(time <= 60) {
     return width < 992 ? (width < 768 ? 9 : 4) : 3
-  } 
+  }
   return width < 992 ? (width < 768 ? 16 :  9) : 6
 }
 

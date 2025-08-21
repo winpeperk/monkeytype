@@ -25,7 +25,7 @@ const initStat = {
 
 const App = () => {
   const [stat, setStat] = useImmer(initStat);
-  const [isFinished, setFinish] = useState(false);
+  const [testState, setTestState] = useState(false);
   const [settings, setSettings] = useImmer({
     mode: "time",
     options: {
@@ -58,12 +58,12 @@ const App = () => {
   useEffect(() => {
     setStat(initStat)
     setSettings(prev => {prev.elapsedTime = 0})
-    setFinish(false)
+    setTestState("pending")
     k.current++
     if(k.current % 2 == 0)
       setText("Dogs sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
     else
-      setText("Cats sum dolor sit, amet consectetur adipisicing elit. Facere voluptatibus, voluptatum alias sint eum earum unde, ad neque quo in perspiciatis voluptas beatae ipsam voluptatem, iste quisquam voluptates. Recusandae, adipisci.")
+      setText("Cats sum dolor sit, amet consectetur adipisicing elit")
   }, [settings.mode, settings.options, settings.extraMode, settings.language, setStat, setSettings])
 
   useEffect(() => {
@@ -89,7 +89,10 @@ const App = () => {
     <ResizeContext.Provider value={{ width }}>
       <Header/>
       <Center flexDirection="column">
-        {!isFinished ? (
+        <div>{settings.elapsedTime}</div>
+        <div>{stat.rawChars}</div>
+        <div>{stat.correctChars}</div>
+        {testState != "finished" ? (
           <>
             <TestConfig settings={settings} setSettings={setSettings}/>
             <SwitchTextLanguage settings={settings} setSettings={setSettings}/>
@@ -97,7 +100,8 @@ const App = () => {
               settings={settings}
               setSettings={setSettings}
               setStat={setStat}
-              setFinish={setFinish}
+              setTestState={setTestState}
+              testState={testState}
               key={text}
               initialText={text}
               divider={divider}
